@@ -25,8 +25,13 @@ func (repo Repo) BaseBranch() string {
 }
 
 type CannonConfig struct {
-	Repos   []Repo          `yaml:"repos"`
-	Actions []action.Action `yaml:"actions"`
+	Title         string              `yaml:"title"`
+	BranchName    string              `yaml:"branchName"`
+	CommitMessage string              `yaml:"commitMessage"`
+	Description   string              `yaml:"description"`
+	Reviewers     map[string][]string `yaml:"reviewers"`
+	Repos         []Repo              `yaml:"repos"`
+	Actions       []action.Action     `yaml:"actions"`
 }
 
 var (

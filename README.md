@@ -1,3 +1,5 @@
+**PLEASE NOTE: This is a clone of [TouchBistro/cannon](https://github.com/TouchBistro/cannon). All credit goes to the original authors for the base functionality.**
+
 # Commit Cannon
 
 cannon is a small CLI tool that lets you make changes to multiple git repos.
@@ -18,7 +20,7 @@ If you want to know more about why we did this and see a use case for it checkou
 1. Make sure you have go installed and set up.
 2. Clone the repo:
     ```sh
-    git clone git@github.com:touchbistro/cannon.git
+    git clone git@github.com:willyjfarrell/cannon.git
     ```
 3. Compile and install cannon globally:
     ```sh
@@ -118,6 +120,20 @@ cannon supports the following actions:
 `cannon.yml` example:
 The `cannon.yml` file is structured as follows:
 ```yml
+title: PR Title
+branchName: new-branch-name
+commitMessage: The message applied to the cannon commit
+description: |-
+  Multi-line PR desscription.
+  
+  Details of the changes and their purpose.
+reviewers:
+  users:
+    - teamMemberA
+    - teamMemberB
+  teams:
+    - teamSlugNameA
+    - teamSlugNameB
 repos:
   - name: TouchBistro/touchbistro-node-boilerplate
   - name: TouchBistro/touchbistro-node-shared
@@ -158,10 +174,6 @@ repos:
 ```
 
 This would create PRs with `develop` as the base branch.
-
-## Contributing
-
-See [contributing](CONTRIBUTING.md) for instructions on how to contribute to `cannon`. PRs welcome!
 
 ## License
 

@@ -188,7 +188,17 @@ func main() {
 	fmt.Println()
 
 	conf := config.Config()
-	newBranchName := "cannon/change-" + uuid.NewV4().String()[0:8]
+
+	var newBranchName string
+	if len(conf.BranchName) > 0 {
+		newBranchName = conf.BranchName
+	} else {
+		newBranchName = "cannon/change-" + uuid.NewV4().String()[0:8]
+	}
+
+	if len(conf.CommitMessage) > 0 {
+		commitMessage = conf.CommitMessage
+	}
 
 	lock := sync.Mutex{}
 	successCh := make(chan string)
@@ -298,16 +308,45 @@ func main() {
 
 			// Create pull requests or genreate pull request urls
 			var url string
+			var pullNumber string
 			if noPR {
 				log.Debugf("Creating new PR URL for repo %s\n", repo.Name)
 				url = git.CreatePRURL(repo.Name, newBranchName)
 			} else {
 				log.Debugf("Creating PR for repo %s\n", repo.Name)
-				description := git.CreatePRDescription(actionResults)
-				url, err = git.CreatePR(repo.Name, repo.BaseBranch(), newBranchName, description)
+
+				var description string
+				if len(conf.Description) > 0 {
+					description = conf.Description
+				} else {
+					description = git.CreatePRDescription(actionResults)
+				}
+
+				var title string
+				if len(conf.Title) > 0 {
+					title = conf.Title
+				} else {
+					title = newBranchName
+				}
+
+				results, err := git.CreatePR(repo.Name, repo.BaseBranch(), title, newBranchName, description)
 				if err != nil {
 					failedCh <- err
 					return
+				}
+
+				url = results["url"]
+				pullNumber = results["pullNumber"]
+
+				// Add reviewers to PR
+				if len(conf.Reviewers) > 0 {
+					log.Debugf("Adding reviewers to PR")
+
+					err := git.AddReviewers(repo.Name, pullNumber, conf.Reviewers)
+					if err != nil {
+						failedCh <- err
+						return
+					}
 				}
 			}
 

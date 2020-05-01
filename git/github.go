@@ -95,7 +95,7 @@ func AddReviewers(repo, pullNumber string, reviewers map[string][]string) error 
 		reqBody["reviewers"] = reviewers["users"]
 	}
 
-	if len(reviewers["users"]) > 0 {
+	if len(reviewers["teams"]) > 0 {
 		reqBody["team_reviewers"] = reviewers["teams"]
 	}
 
